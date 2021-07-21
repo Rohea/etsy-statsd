@@ -1,4 +1,14 @@
-StatsD [![Build Status][travis-ci_status_img]][travis-ci_statsd]
+# node-statsd
+
+This component is considered legacy but still required for backend handling of stats.
+
+It was forked from [atodd/etsy-statsd](https://github.com/atodd/etsy-statsd) which hasn't seen any development in years
+and edited to suit our needs.
+
+------
+# Original README contents of the fork
+
+StatsD
 ======
 
 A network daemon that runs on the [Node.js][node] platform and
