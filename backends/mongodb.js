@@ -242,21 +242,38 @@ var insert = function (dbName, collection, metric, callback) {
     database(dbName, metric, function (err, db, metric) {
         if (err) {
             return callback(err);
-        }
-        ;
+        };
 
-        db.createCollection(collection, colInfo, function (err, collClient) {
+        var colExists = db.listCollections({ name: collection }).hasNext();
+        if (colExists) {
+            db.collection(collection, {}, function (err, collClient) {
+                if (collClient == null) {
+                    console.log(collection + ': failed to read an existing collection', err);
+                    return null;
+                }
 
-            if (collClient == null) {
-                console.log(collection + ': could not fetch collection!', err);
-                return null;
-            }
+                collClient.insert(metric, function (err, data) {
+                    // console.log(collection + ': inserted into an existing collection', err);
 
-            collClient.insert(metric, function (err, data) {
-                if (err) callback(err);
-                if (!err) callback(false, collection);
+                    if (err) callback(err);
+                    if (!err) callback(false, collection);
+                });
             });
-        });
+        } else {
+            // db.createCollection() fails if the collection already exists
+            // https://www.mongodb.com/docs/manual/reference/method/db.createCollection/
+            db.createCollection(collection, colInfo, function (err, collClient) {
+                if (collClient == null) {
+                    console.log(collection + ': failed to create a new collection', err);
+                    return null;
+                }
+
+                collClient.insert(metric, function (err, data) {
+                    if (err) callback(err);
+                    if (!err) callback(false, collection);
+                });
+            });
+        }
     });
 };
 
