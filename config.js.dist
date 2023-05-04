@@ -1,5 +1,7 @@
 /*
 
+!!! Rename this file to config.js when taking into use.
+
 Required Variables:
 
   port:             StatsD listening port [default: 8125]
